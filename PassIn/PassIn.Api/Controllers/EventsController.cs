@@ -36,6 +36,14 @@ namespace PassIn.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost]
+        [Route("{id}/register")]
+        public IActionResult Register([FromRoute] Guid eventId, [FromBody] RequestRegisterEventJson request) 
+        {
+            return Created();
+        }
     }
+
     
 }
