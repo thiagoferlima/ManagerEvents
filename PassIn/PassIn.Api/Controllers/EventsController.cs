@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PassIn.Application.UseCases.Events.Register;
+using PassIn.Application.UseCases.Events.RegisterAttendees;
 using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
 using PassIn.Exceptions;
@@ -38,9 +39,12 @@ namespace PassIn.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{id}/register")]
+        [Route("{eventId}/register")]
         public IActionResult Register([FromRoute] Guid eventId, [FromBody] RequestRegisterEventJson request) 
         {
+            var useCase = new RegisterAttendeeOnEventUseCase();
+            useCase.Execute(eventId, request);
+
             return Created();
         }
     }
