@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PassIn.Application.UseCases.Events.Register;
 using PassIn.Communication.Requests;
 using PassIn.Communication.Responses;
@@ -20,9 +19,9 @@ namespace PassIn.Api.Controllers
             {
                 var useCase = new RegisterEventUseCase();
 
-                useCase.Execute(request);
+                var response = useCase.Execute(request);
 
-                return Created();
+                return Created(string.Empty, response);
             }
             catch (PassInException ex) 
             {
@@ -35,5 +34,30 @@ namespace PassIn.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(ResponseEventJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]      
+        public IActionResult GetById([FromRoute] Guid id) 
+        {
+  
+            try
+            {
+                var useCase = new GetEventByIdUseCase();
+
+                var response = useCase.Execute(id);
+
+                return Ok(response);
+            }
+            catch (PassInException ex)
+            {
+                return NotFound(new ResponseErrorJson(ex.Message));
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorJson("Unknown error"));
+            }
+        }
     }
 }

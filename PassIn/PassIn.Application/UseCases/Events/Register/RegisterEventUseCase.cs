@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PassIn.Communication.Requests;
+using PassIn.Communication.Responses;
 using PassIn.Exceptions;
 using PassIn.Infrastructure;
 using System.Data;
@@ -8,9 +9,10 @@ namespace PassIn.Application.UseCases.Events.Register
 {
     public class RegisterEventUseCase
     {
-        public void Execute(RequestEventJson request) 
+        public ResponseRegisteredEventJson Execute(RequestEventJson request) 
         {
             Validate(request);
+
             var DbContext = new PassInDbContext();
 
             var entity = new Infrastructure.Entities.Event
@@ -22,6 +24,11 @@ namespace PassIn.Application.UseCases.Events.Register
             };
             DbContext.Events.Add(entity);
             DbContext.SaveChanges();
+
+            return new ResponseRegisteredEventJson
+            {
+                Id = entity.Id
+            };
         }
         private void Validate(RequestEventJson request) 
         {
